@@ -1,0 +1,4 @@
+rootProject.name = 'backend'
+include 'eureka'
+include 'gateway'
+include 'core'
