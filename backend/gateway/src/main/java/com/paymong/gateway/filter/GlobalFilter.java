@@ -40,7 +40,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
                 String address = connection.getAddress().getHostAddress();
                 String hostName = connection.getHostName();
 
-                log.info("{} : GlobalFilter(request) : {} : {} : {}", LocalDateTime.now(), address, hostName, id);
+                log.info("GlobalFilter(request) : {} : {} : {} : {}", id, path, address, hostName);
             }
 
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
@@ -49,7 +49,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
                     int statusCode = response.getStatusCode().value();
                     long during = Duration.between(requestTime, LocalDateTime.now()).getSeconds();
 
-                    log.info("{} : GlobalFilter(response) : {} : {}s", LocalDateTime.now(), statusCode, during);
+                    log.info("GlobalFilter(response) : {} : {}s", statusCode, during);
                 }
             }));
         };
