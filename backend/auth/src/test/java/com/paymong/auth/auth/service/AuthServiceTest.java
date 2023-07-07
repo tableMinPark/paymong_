@@ -12,7 +12,7 @@ import com.paymong.auth.global.redis.SessionRepository;
 import com.paymong.auth.global.security.Token;
 import com.paymong.auth.global.security.TokenProvider;
 import com.paymong.core.code.DeviceCode;
-import com.paymong.core.exception.InvalidException;
+import com.paymong.core.exception.failException.InvalidFailException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +54,7 @@ class AuthServiceTest {
         /* 로그인 로직 시작 */
         /* 플레이어 아이디 형식 확인 */
         if (!StringUtils.hasText(playerId) || !playerId.startsWith("a_"))
-            throw new InvalidException(AuthFailCode.INVALID_PLAYER_ID);
+            throw new InvalidFailException(AuthFailCode.INVALID_PLAYER_ID);
 
         /* 회원 등록 여부 확인 */
         Member member = memberRepository.findByPlayerId(playerId)
@@ -179,15 +179,15 @@ class AuthServiceTest {
         /* 재발급 로직 시작 */
         // 리프레시 토큰 형식 확인
         if (!StringUtils.hasText(refreshToken) || !refreshToken.startsWith("Bearer "))
-            throw new InvalidException(AuthFailCode.INVALID_TOKEN);
+            throw new InvalidFailException(AuthFailCode.INVALID_TOKEN_FORM);
         else
             refreshToken = refreshToken.substring(7);
         // 강제 만료 여부 확인
         if (sessionRepository.findRefreshTokenById(refreshToken) == null)
-            throw new InvalidException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
+            throw new InvalidFailException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
         // 만료 여부 확인
         if (tokenProvider.isTokenExpired(refreshToken))
-            throw new InvalidException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
+            throw new InvalidFailException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
 
         Refresh refresh = sessionRepository.findRefreshTokenById(refreshToken);
         String memberId = refresh.getMemberId();

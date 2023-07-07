@@ -1,7 +1,7 @@
 package com.paymong.auth.global.security;
 
-import com.paymong.core.exception.NotFoundException;
-import com.paymong.core.exception.UnAuthException;
+import com.paymong.core.exception.failException.NotFoundFailException;
+import com.paymong.core.exception.failException.UnAuthFailException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,7 +27,7 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
     private final CustomUserDetailService customUserDetailService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException, NotFoundException, UnAuthException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException, NotFoundFailException, UnAuthFailException {
         String accessToken = getAccessToken((HttpServletRequest) request);
 
         // 관리자 여부 확인

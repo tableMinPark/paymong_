@@ -1,6 +1,6 @@
 package com.paymong.auth.global.config;
 
-import com.paymong.auth.global.redis.SessionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymong.auth.global.security.CustomUserDetailService;
 import com.paymong.auth.global.security.TokenAuthenticationFilter;
 import com.paymong.auth.global.security.TokenExceptionFilter;
@@ -22,11 +22,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CustomUserDetailService customUserDetailService;
-    private final TokenExceptionFilter tokenExceptionFilter;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
             .cors()
             .and()
@@ -47,8 +46,7 @@ public class SecurityConfig {
             .formLogin().disable();
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenProvider, customUserDetailService), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter.class);
-
+        http.addFilterBefore(new TokenExceptionFilter(objectMapper), TokenAuthenticationFilter.class);
         return http.build();
     }
 

@@ -1,5 +1,8 @@
 package com.paymong.auth.global.redis;
 
+import com.paymong.core.code.ErrorCode;
+import com.paymong.core.exception.errorException.DeleteException;
+import com.paymong.core.exception.errorException.RegisterException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -25,21 +28,23 @@ public class SessionRepository {
     }
 
     /* 저장 */
-    public void sessionTokenSave(String key, Session session) {
+    public void sessionTokenSave(String key, Session session) throws RegisterException {
         ValueOperations<String, Session> valueOperations = sessionRedisTemplate.opsForValue();
         valueOperations.set(key, session);
     }
 
-    public void accessTokenSave(String key, Access access, Long expire) {
+    public void accessTokenSave(String key, Access access, Long expire) throws RegisterException {
         ValueOperations<String, Access> valueOperations = accessRedisTemplate.opsForValue();
         valueOperations.set(key, access);
-        accessRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+        Boolean isSuccess = accessRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+        if (Boolean.FALSE.equals(isSuccess)) throw new RegisterException(ErrorCode.NOT_REGISTER_REDIS);
     }
 
-    public void refreshTokenSave(String key, Refresh refresh, Long expire) {
+    public void refreshTokenSave(String key, Refresh refresh, Long expire) throws RegisterException {
         ValueOperations<String, Refresh> valueOperations = refreshRedisTemplate.opsForValue();
         valueOperations.set(key, refresh);
-        refreshRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+        Boolean isSuccess = refreshRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+        if (Boolean.FALSE.equals(isSuccess)) throw new RegisterException(ErrorCode.NOT_REGISTER_REDIS);
     }
 
     /* 조회 */
@@ -47,29 +52,26 @@ public class SessionRepository {
         ValueOperations<String, Session> valueOperations = sessionRedisTemplate.opsForValue();
         return Optional.ofNullable(valueOperations.get(key));
     }
-
     public Access findAccessTokenById(String key) {
         ValueOperations<String, Access> valueOperations = accessRedisTemplate.opsForValue();
         return valueOperations.get(key);
     }
-
     public Refresh findRefreshTokenById(String key) {
         ValueOperations<String, Refresh> valueOperations = refreshRedisTemplate.opsForValue();
         return valueOperations.get(key);
     }
 
     /* 삭제 */
-    public void sessionTokenDelete(String key) {
-        ValueOperations<String, Session> valueOperations = sessionRedisTemplate.opsForValue();
-        sessionRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+    public void sessionTokenDelete(String key) throws DeleteException {
+        Boolean isSuccess = sessionRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
     }
-    public void accessTokenDelete(String key) {
-        ValueOperations<String, Access> valueOperations = accessRedisTemplate.opsForValue();
-        accessRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+    public void accessTokenDelete(String key) throws DeleteException {
+        Boolean isSuccess = accessRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
     }
-
-    public void refreshTokenDelete(String key) {
-        ValueOperations<String, Refresh> valueOperations = refreshRedisTemplate.opsForValue();
-        refreshRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+    public void refreshTokenDelete(String key) throws DeleteException {
+        Boolean isSuccess = refreshRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
+        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
     }
 }

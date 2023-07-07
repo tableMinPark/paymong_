@@ -4,9 +4,9 @@ import com.paymong.core.code.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class ErrorResponse extends BasicResponse{
-    String message;
-    Integer code;
+public class ErrorResponse extends BasicResponse {
+    private final String message;
+    private final Integer code;
 
     public ErrorResponse(ErrorCode errorCode){
         super("error");

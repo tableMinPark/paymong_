@@ -1,17 +1,17 @@
 package com.paymong.auth.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.paymong.auth.global.code.AuthFailCode;
 import com.paymong.core.code.BasicFailCode;
 import com.paymong.core.code.ErrorCode;
-import com.paymong.core.exception.InvalidException;
-import com.paymong.core.exception.NotFoundException;
-import com.paymong.core.exception.UnAuthException;
+import com.paymong.core.exception.failException.InvalidFailException;
+import com.paymong.core.exception.failException.NotFoundFailException;
+import com.paymong.core.exception.failException.UnAuthFailException;
 import com.paymong.core.response.ErrorResponse;
 import com.paymong.core.response.FailResponse;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -32,11 +32,11 @@ public class TokenExceptionFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {
             chain.doFilter(request, response);
-        } catch (NotFoundException e) {
+        } catch (NotFoundFailException e) {
             setFailResponse(HttpStatus.BAD_REQUEST, (HttpServletResponse) response, e.getFailCode());
-        } catch (UnAuthException e) {
+        } catch (UnAuthFailException e) {
             setFailResponse(HttpStatus.UNAUTHORIZED, (HttpServletResponse) response, e.getFailCode());
-        } catch (InvalidException e) {
+        } catch (InvalidFailException e) {
             setFailResponse(HttpStatus.FORBIDDEN, (HttpServletResponse) response, e.getFailCode());
         } catch (Exception e) {
             setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, (HttpServletResponse) response, ErrorCode.INTERNAL_SERVER);

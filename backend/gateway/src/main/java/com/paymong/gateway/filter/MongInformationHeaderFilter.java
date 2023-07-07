@@ -36,7 +36,7 @@ public class MongInformationHeaderFilter extends AbstractGatewayFilterFactory<Mo
                 request.mutate().header("mongId", mongId).build();
 
             if (config.preLogger) {
-                log.info("MongInformationHeaderFilter(request) : {} : {} : {} : {}", id, path, memberId, mongId);
+                log.info("MongInformationHeaderFilter : {} : {} : {} : {}", id, path, memberId, mongId);
             }
 
             return chain.filter(exchange);

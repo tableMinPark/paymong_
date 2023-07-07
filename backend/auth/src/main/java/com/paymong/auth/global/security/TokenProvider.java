@@ -1,6 +1,8 @@
 
 package com.paymong.auth.global.security;
 
+import com.paymong.auth.global.code.AuthFailCode;
+import com.paymong.core.exception.failException.InvalidFailException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -47,8 +49,12 @@ public class TokenProvider {
     }
 
     public Boolean isTokenExpired(String token) {
-        Date expiration = extractAllClaims(token).getExpiration();
-        return expiration.before(new Date());
+        try {
+            Date expiration = extractAllClaims(token).getExpiration();
+            return expiration.before(new Date());
+        } catch (RuntimeException e) {
+            throw new InvalidFailException(AuthFailCode.INVALID_TOKEN);
+        }
     }
 
     public String generateAccessToken(String memberId) {

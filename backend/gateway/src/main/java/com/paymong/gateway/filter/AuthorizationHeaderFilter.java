@@ -41,7 +41,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             request.mutate().header("MemberId", memberId).build();
 
             if (config.preLogger) {
-                log.info("AuthorizationHeaderFilter(request) : {} : {} : {}", id, path, memberId);
+                log.info("AuthorizationHeaderFilter : {} : {} : {}", id, path, memberId);
             }
 
             return chain.filter(exchange);

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class SuccessResponse extends BasicResponse {
-    Object data;
+    private final Object data;
 
     public SuccessResponse(Object data) {
         super("success");
