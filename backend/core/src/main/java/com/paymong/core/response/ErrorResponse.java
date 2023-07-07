@@ -1,7 +1,9 @@
 package com.paymong.core.response;
 
 import com.paymong.core.code.ErrorCode;
+import lombok.Getter;
 
+@Getter
 public class ErrorResponse extends BasicResponse{
     String message;
     Integer code;

@@ -1,5 +1,8 @@
 package com.paymong.core.response;
 
+import lombok.Getter;
+
+@Getter
 public class SuccessResponse extends BasicResponse {
     Object data;
 

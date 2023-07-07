@@ -2,7 +2,9 @@ package com.paymong.core.response;
 
 import com.paymong.core.code.BasicFailCode;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class FailResponse extends BasicResponse {
     FailResponseData data;
 
