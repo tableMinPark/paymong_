@@ -16,7 +16,7 @@ import com.paymong.auth.global.redis.Refresh;
 import com.paymong.auth.global.redis.Session;
 import com.paymong.auth.global.redis.SessionRepository;
 import com.paymong.auth.global.security.Token;
-import com.paymong.auth.global.jwt.TokenProvider;
+import com.paymong.auth.global.jwt.ExternalTokenProvider;
 import com.paymong.core.code.DeviceCode;
 import com.paymong.core.code.RoleCode;
 import com.paymong.core.exception.fail.InvalidFailException;
@@ -41,7 +41,7 @@ public class AuthService {
     private final PayPointRepository payPointRepository;
     private final RoleRepository roleRepository;
     private final SessionRepository sessionRepository;
-    private final TokenProvider tokenProvider;
+    private final ExternalTokenProvider externalTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.external.access_token_expired}")
@@ -136,7 +136,7 @@ public class AuthService {
 
         // 만료 여부 확인
         Refresh refresh = sessionRepository.findRefreshTokenById(refreshToken);
-        if (refresh == null || tokenProvider.isTokenExpired(refreshToken))
+        if (refresh == null || externalTokenProvider.isTokenExpired(refreshToken))
             throw new InvalidFailException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
 
         // 리프레시 토큰이 일치하는지 확인
@@ -146,7 +146,7 @@ public class AuthService {
         String memberId = refresh.getMemberId();
         DeviceCode deviceCode = refresh.getDeviceCode();
 
-        String accessToken = tokenProvider.generateAccessToken(memberId);
+        String accessToken = externalTokenProvider.generateAccessToken(memberId);
         Session session = sessionRepository.findSessionTokenById(memberId)
                 .orElseGet(() -> Session.builder()
                         .memberId(memberId)
@@ -159,7 +159,7 @@ public class AuthService {
         if (session.getAccessToken().containsKey(deviceCode)) {
             String expireAccessToken = session.getAccessToken().get(deviceCode);
             // 만료 시킬 토큰이 만료시간이 되지 않았으면 (레디스에 존재함) 삭제
-            if (!tokenProvider.isTokenExpired(expireAccessToken)) {
+            if (!externalTokenProvider.isTokenExpired(expireAccessToken)) {
                 sessionRepository.accessTokenDelete(expireAccessToken);
             }
         }
@@ -180,8 +180,8 @@ public class AuthService {
     }
 
     private Token generateToken(String memberId, DeviceCode deviceCode) {
-        String accessToken = tokenProvider.generateAccessToken(memberId);
-        String refreshToken = tokenProvider.generateRefreshToken(memberId);
+        String accessToken = externalTokenProvider.generateAccessToken(memberId);
+        String refreshToken = externalTokenProvider.generateRefreshToken(memberId);
 
         Access access = Access.builder()
                 .memberId(memberId)

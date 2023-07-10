@@ -1,9 +1,6 @@
 package com.paymong.gateway.filter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymong.gateway.code.GatewayFailCode;
-import com.paymong.gateway.exception.HeaderException;
 import com.paymong.gateway.exception.InvalidException;
 import com.paymong.gateway.jwt.ExternalTokenProvider;
 import com.paymong.gateway.redis.Access;
@@ -17,14 +14,13 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 // 인가 필터
 @Slf4j
 @Component
-public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
-    private final ObjectMapper objectMapper;
+public class AuthorizationFilter extends AbstractGatewayFilterFactory<AuthorizationFilter.Config> {
     private final ExternalTokenProvider externalTokenProvider;
     private final SessionRepository sessionRepository;
 
@@ -33,9 +29,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         private boolean preLogger;
     }
 
-    public AuthorizationHeaderFilter(ObjectMapper objectMapper, ExternalTokenProvider externalTokenProvider, SessionRepository sessionRepository) {
-        super(AuthorizationHeaderFilter.Config.class);
-        this.objectMapper = objectMapper;
+    public AuthorizationFilter(ExternalTokenProvider externalTokenProvider, SessionRepository sessionRepository) {
+        super(AuthorizationFilter.Config.class);
         this.externalTokenProvider = externalTokenProvider;
         this.sessionRepository = sessionRepository;
     }
@@ -63,35 +58,23 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             else if (!accessToken.equals(access.getAccessToken()))
                 throw new InvalidException(GatewayFailCode.UN_AUTHENTICATION_TOKEN);
 
-            try {
-                // 토큰에서 memberId 추출 후 헤더에 삽입
-                String memberId = externalTokenProvider.getMemberId(accessToken);
-                request.mutate().header("MemberId", memberId).build();
+            // 토큰에서 memberId 추출 후 Attribute 에 저장 (PackageFilter 에서 토큰화 후 Header 에 저장)
+            String memberId = externalTokenProvider.getMemberId(accessToken);
+            exchange.getAttributes().put("memberId", memberId);
 
-                // 비밀번호 생성해서 헤더에 삽입
-                String password = UUID.randomUUID().toString();
-                request.mutate().header("Password", password).build();
+            // 레디스에서 역할 조회 후 Attribute 에 저장 (PackageFilter 에서 토큰화 후 Header 에 저장)
+            Session session = sessionRepository.findSessionTokenById(memberId)
+                    .orElseThrow(() -> new InvalidException(GatewayFailCode.EXPIRED_ACCESS_TOKEN));
+            List<String> roles = session.getRoles();
+            exchange.getAttributes().put("roles", roles);
 
-                // 레디스에서 역할 조회 후 헤더에 삽입
-                Session session = sessionRepository.findSessionTokenById(memberId)
-                        .orElseThrow(() -> new InvalidException(GatewayFailCode.EXPIRED_ACCESS_TOKEN));
-                String roles = objectMapper.writeValueAsString(session.getRoles());
-                request.mutate().header("Roles", roles).build();
-
-
-                // 인증 정보를 담았다는 정보를 저장
-                request.mutate().header("IsAuth", "true").build();
-
-                if (config.preLogger) {
-                    String id = request.getId();
-                    String path = request.getPath().value();
-                    log.info("AuthorizationHeaderFilter : 회원 정보 추출 : {} : {} : {} : {} : {}", id, path, accessToken, memberId, roles);
-                }
-
-                return chain.filter(exchange);
-            } catch (JsonProcessingException e) {
-                throw new HeaderException(GatewayFailCode.NOT_FOUND_ROLES);
+            if (config.preLogger) {
+                String id = request.getId();
+                String path = request.getPath().value();
+                log.info("AuthorizationHeaderFilter : 회원 정보 추출 : {} : {} : {} : {} : {}", id, path, accessToken, memberId, roles);
             }
+
+            return chain.filter(exchange);
         };
     }
 }

@@ -27,28 +27,27 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
     public Mono<Void> handle(ServerWebExchange exchange, Throwable e) {
         ServerHttpRequest request = exchange.getRequest();
 
+        String method = request.getMethodValue();
         String id = request.getId();
         String path = request.getPath().value();
 
         if (e instanceof NullPointerException) {
-            log.error("AuthorizationHeaderFilter : 헤더에 엑세스 토큰 없음 : {} : {} : ", id, path);
+            log.error("AuthorizationHeaderFilter : 헤더에 엑세스 토큰 없음 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.NOT_FOUND_TOKEN);
         } else if (e instanceof InvalidException) {
-            log.error("AuthorizationHeaderFilter : 유효하지 않은 토큰 : {} : {}", id, path);
+            log.error("AuthorizationHeaderFilter : 유효하지 않은 토큰 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, ((InvalidException) e).getFailCode());
         } else if (e instanceof HeaderException) {
-            log.error("AuthorizationHeaderFilter : 헤더에 역할 저장 불가 : {} : {}", id, path);
+            log.error("AuthorizationHeaderFilter : 헤더에 토큰 저장 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, ((HeaderException) e).getFailCode());
         } else if (e instanceof NotFoundException) {
-            log.error("AuthorizationHeaderFilter : 마이크로 서비스 접근 불가 : {} : {}", id, path);
+            log.error("AuthorizationHeaderFilter : 마이크로 서비스 접근 불가 : {} : {} : {}", id, method, path);
             return setErrorResponse(exchange, GatewayErrorCode.INVALID_SERVER);
         } else if (e instanceof RuntimeException) {
-            e.printStackTrace();
-            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : ", id, path);
+            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.UN_AUTHENTICATION);
         } else {
-            e.printStackTrace();
-            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : ", id, path);
+            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.UN_AUTHENTICATION);
         }
     }

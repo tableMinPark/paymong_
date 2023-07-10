@@ -9,30 +9,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class MongInformationHeaderFilter extends AbstractGatewayFilterFactory<MongInformationHeaderFilter.Config> {
+public class MongInformationFilter extends AbstractGatewayFilterFactory<MongInformationFilter.Config> {
 
     @Data
     public static class Config {
         private boolean preLogger;
     }
 
-    public MongInformationHeaderFilter() { super(Config.class); }
+    public MongInformationFilter() { super(Config.class); }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
-            String memberId = request.getHeaders().get("MemberId").get(0);
+            String memberId = exchange.getAttribute("memberId");
 
             // memberId를 기준으로 redis 에서 mongId 조회 후 mongId 헤더에 삽입
             String mongId = "1";
-            request.mutate().header("mongId", mongId).build();
+
+            exchange.getAttributes().put("mongId", mongId);
 
             if (config.preLogger) {
                 String id = request.getId();
                 String path = request.getPath().value();
-                log.info("MongInformationHeaderFilter : {} : {} : {} : {}", id, path, memberId, mongId);
+                log.info("MongInformationHeaderFilter : 몽 정보 추출 : {} : {} : {} : {}", id, path, memberId, mongId);
             }
 
             return chain.filter(exchange);

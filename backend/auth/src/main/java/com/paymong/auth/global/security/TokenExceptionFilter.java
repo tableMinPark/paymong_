@@ -33,16 +33,13 @@ public class TokenExceptionFilter extends GenericFilterBean {
         try {
             chain.doFilter(request, response);
         } catch (NotFoundFailException | UnAuthFailException | InvalidFailException e) {
-            String memberId = request.getHeader("MemberId");
-            String password = request.getHeader("Password");
-            String rolesStr = request.getHeader("Roles");
-            log.error("TokenExceptionFilter : 인증/인가에 필요한 정보가 없음 : {} : {} : {}", memberId, password, rolesStr);
+            String internalToken = request.getHeader("InternalToken");
+            log.error("TokenExceptionFilter : 인증/인가에 필요한 정보가 없음 : {}", internalToken);
             setFailResponse((HttpServletResponse) response, e.getFailCode());
         } catch (Exception e) {
-            String memberId = request.getHeader("MemberId");
-            String password = request.getHeader("Password");
-            String rolesStr = request.getHeader("Roles");
-            log.error("TokenExceptionFilter : 알 수 없는 에러 발생 : {} : {} : {}", memberId, password, rolesStr);
+            e.printStackTrace();
+            String internalToken = request.getHeader("InternalToken");
+            log.error("TokenExceptionFilter : 알 수 없는 에러 발생, {}", internalToken);
             setErrorResponse((HttpServletResponse) response, ErrorCode.INTERNAL_SERVER);
         }
     }

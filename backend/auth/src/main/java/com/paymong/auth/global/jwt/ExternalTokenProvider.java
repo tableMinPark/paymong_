@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class TokenProvider {
+public class ExternalTokenProvider {
 
     @Value("${jwt.external.secret}")
     private String JWT_KEY;
@@ -30,7 +30,7 @@ public class TokenProvider {
     @Value("${jwt.external.refresh_token_expired}")
     private Long REFRESH_TOKEN_EXPIRED;
 
-    public Claims extractAllClaims(String token) { // 2
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
             .setSigningKey(getSigningKey(JWT_KEY))
             .build()

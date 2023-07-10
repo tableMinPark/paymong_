@@ -9,7 +9,6 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,7 +33,6 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
             LocalDateTime requestTime = LocalDateTime.now();
 
             ServerHttpRequest request = exchange.getRequest();
-            request.mutate().header("IsAuth", "false").build();
 
             if (config.preLogger) {
                 String id = request.getId();

@@ -15,7 +15,8 @@ public enum GatewayFailCode {
         EXPIRED_ : 만료
         INVALID_ : 유효하지 않음
     */
-    NOT_FOUND_ROLES(HttpStatus.UNAUTHORIZED, "권한 확인 불가", "사용자의 권한을 확인할 수 없습니다."),
+
+    NOT_REIGSTER_TOKEN(HttpStatus.UNAUTHORIZED, "내부 토큰 저장 실패", "서버 내부 토큰 패키징 중에 오류가 발생했습니다."),
     UN_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "인증 불가", "회원 인증을 할 수 없습니다."),
     // Spring Security
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 없음", "엑세스 토큰이 없습니다."),

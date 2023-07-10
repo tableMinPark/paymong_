@@ -24,10 +24,8 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
     // 유효한 토큰이 없어 인증에 필요한 정보가 없는 경우 해당 핸들러가 응답
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        String memberId = request.getHeader("MemberId");
-        String password = request.getHeader("Password");
-        String rolesStr = request.getHeader("Roles");
-        log.error("AuthenticationEntryPoint : 인증 불가 : {} : {} : {}", memberId, password, rolesStr);
+        String internalToken = request.getHeader("InternalToken");
+        log.error("AuthenticationEntryPoint : 인증 불가 : {}", internalToken);
         setFailResponse(response, FailCode.UN_AUTHENTICATION);
     }
 

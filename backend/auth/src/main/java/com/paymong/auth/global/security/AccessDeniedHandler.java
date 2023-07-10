@@ -24,10 +24,8 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
     // 접근 권한이 없어 인가가 불가한 경우에 해당 핸들러가 응답
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
-        String memberId = request.getHeader("MemberId");
-        String password = request.getHeader("Password");
-        String rolesStr = request.getHeader("Roles");
-        log.error("AuthenticationEntryPoint : 인가 불가 : {} : {} : {}", memberId, password, rolesStr);
+        String internalToken = request.getHeader("InternalToken");
+        log.error("AuthenticationEntryPoint : 인가 불가 : {}", internalToken);
         setFailResponse(response, FailCode.FORBIDDEN);
     }
 

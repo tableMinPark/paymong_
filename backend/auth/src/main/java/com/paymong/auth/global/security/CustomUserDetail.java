@@ -20,13 +20,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 public class CustomUserDetail implements UserDetails {
     private String memberId;
-    private String password;
+    private String internalToken;
     private List<String> roles;
 
-    public static UserDetails of(String memberId, String password, List<String> roles) {
+    public static UserDetails of(String memberId, String internalToken, List<String> roles) {
         return CustomUserDetail.builder()
             .memberId(memberId)
-            .password(password)
+            .internalToken(internalToken)
             .roles(roles)
             .build();
     }
@@ -39,7 +39,7 @@ public class CustomUserDetail implements UserDetails {
     /** 비밀번호 **/
     @Override
     public String getPassword() {
-        return password;
+        return internalToken;
     }
     /** 권한 목록 **/
     @Override

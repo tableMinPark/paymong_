@@ -1,6 +1,7 @@
 package com.paymong.auth.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymong.auth.global.jwt.InternalTokenProvider;
 import com.paymong.auth.global.security.*;
 import com.paymong.core.code.RoleCode;
 import com.paymong.auth.global.security.AccessDeniedHandler;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final InternalTokenProvider internalTokenProvider;
     private final ObjectMapper objectMapper;
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -45,7 +47,7 @@ public class SecurityConfig {
             .and()
             .formLogin().disable();
 
-        http.addFilterBefore(new TokenAuthenticationFilter(objectMapper), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenAuthenticationFilter(internalTokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new TokenExceptionFilter(objectMapper), TokenAuthenticationFilter.class);
         return http.build();
     }

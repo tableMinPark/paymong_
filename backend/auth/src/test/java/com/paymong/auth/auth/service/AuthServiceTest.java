@@ -13,7 +13,7 @@ import com.paymong.auth.global.redis.Refresh;
 import com.paymong.auth.global.redis.Session;
 import com.paymong.auth.global.redis.SessionRepository;
 import com.paymong.auth.global.security.Token;
-import com.paymong.auth.global.jwt.TokenProvider;
+import com.paymong.auth.global.jwt.ExternalTokenProvider;
 import com.paymong.core.code.DeviceCode;
 import com.paymong.core.code.RoleCode;
 import com.paymong.core.exception.fail.InvalidFailException;
@@ -39,7 +39,7 @@ class AuthServiceTest {
     @Autowired
     private SessionRepository sessionRepository;
     @Autowired
-    private TokenProvider tokenProvider;
+    private ExternalTokenProvider externalTokenProvider;
 
     @Value("${jwt.access_token_expired}")
     private Long accessTokenExpired;
@@ -176,14 +176,14 @@ class AuthServiceTest {
         if (sessionRepository.findRefreshTokenById(refreshToken) == null)
             throw new InvalidFailException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
         // 만료 여부 확인
-        if (tokenProvider.isTokenExpired(refreshToken))
+        if (externalTokenProvider.isTokenExpired(refreshToken))
             throw new InvalidFailException(AuthFailCode.EXPIRED_REFRESH_TOKEN);
 
         Refresh refresh = sessionRepository.findRefreshTokenById(refreshToken);
         String memberId = refresh.getMemberId();
         DeviceCode deviceCode = refresh.getDeviceCode();
 
-        String accessToken = tokenProvider.generateAccessToken(memberId);
+        String accessToken = externalTokenProvider.generateAccessToken(memberId);
         Session session = sessionRepository.findSessionTokenById(memberId)
                 .orElseGet(() -> Session.builder()
                         .memberId(memberId)
@@ -250,7 +250,7 @@ class AuthServiceTest {
                 });
 
         String memberId = String.valueOf(member.getMemberId());
-        String refreshToken = tokenProvider.generateRefreshToken(memberId);
+        String refreshToken = externalTokenProvider.generateRefreshToken(memberId);
 
         Session session = Session.builder()
                 .memberId(memberId)
@@ -271,8 +271,8 @@ class AuthServiceTest {
 
     /* TOKEN */
     private Token generateToken(String memberId, DeviceCode deviceCode) {
-        String accessToken = tokenProvider.generateAccessToken(memberId);
-        String refreshToken = tokenProvider.generateRefreshToken(memberId);
+        String accessToken = externalTokenProvider.generateAccessToken(memberId);
+        String refreshToken = externalTokenProvider.generateRefreshToken(memberId);
 
         Access access = Access.builder()
                 .memberId(memberId)
