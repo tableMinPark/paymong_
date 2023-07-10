@@ -1,5 +1,11 @@
 package com.paymong.core.code;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@AllArgsConstructor
 public enum ErrorCode {
     /*
         prefix 규칙
@@ -10,26 +16,14 @@ public enum ErrorCode {
             EXPIRED_ : 만료
             INVALID_ : 유효하지 않음
     */
-    INTERNAL_SERVER("서버 내부 에러", 500),
-    NOT_REGISTER_REDIS("레디스 데이터 등록 실패", 501),
-    NOT_FOUND_REDIS("레디스 데이터 조회 실패", 502),
-    NOT_MODIFY_REDIS("레디스 데이터 수정 실패", 503),
-    NOT_DELETE_REDIS("레디스 데이터 삭제 실패", 504);
 
+    INTERNAL_SERVER(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러", 500),
+    NOT_REGISTER(HttpStatus.INTERNAL_SERVER_ERROR,"데이터 등록 오류", 501),
+    NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR,"데이터 조회 오류", 502),
+    NOT_MODIFY(HttpStatus.INTERNAL_SERVER_ERROR,"데이터 수정 오류", 503),
+    NOT_DELETE(HttpStatus.INTERNAL_SERVER_ERROR,"데이터 삭제 오류", 504);
+
+    private final HttpStatus httpStatus;
     private final String message;
     private final Integer code;
-
-    ErrorCode(final String message, final Integer code) {
-        this.message = message;
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public Integer getCode() {
-        return this.code;
-    }
-
 }

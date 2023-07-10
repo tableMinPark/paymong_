@@ -1,8 +1,5 @@
 package com.paymong.auth.global.redis;
 
-import com.paymong.core.code.ErrorCode;
-import com.paymong.core.exception.errorException.DeleteException;
-import com.paymong.core.exception.errorException.RegisterException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -28,23 +25,21 @@ public class SessionRepository {
     }
 
     /* 저장 */
-    public void sessionTokenSave(String key, Session session) throws RegisterException {
+    public void sessionTokenSave(String key, Session session) {
         ValueOperations<String, Session> valueOperations = sessionRedisTemplate.opsForValue();
         valueOperations.set(key, session);
     }
 
-    public void accessTokenSave(String key, Access access, Long expire) throws RegisterException {
+    public void accessTokenSave(String key, Access access, Long expire) {
         ValueOperations<String, Access> valueOperations = accessRedisTemplate.opsForValue();
         valueOperations.set(key, access);
         Boolean isSuccess = accessRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
-        if (Boolean.FALSE.equals(isSuccess)) throw new RegisterException(ErrorCode.NOT_REGISTER_REDIS);
     }
 
-    public void refreshTokenSave(String key, Refresh refresh, Long expire) throws RegisterException {
+    public void refreshTokenSave(String key, Refresh refresh, Long expire) {
         ValueOperations<String, Refresh> valueOperations = refreshRedisTemplate.opsForValue();
         valueOperations.set(key, refresh);
-        Boolean isSuccess = refreshRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
-        if (Boolean.FALSE.equals(isSuccess)) throw new RegisterException(ErrorCode.NOT_REGISTER_REDIS);
+        refreshRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
     }
 
     /* 조회 */
@@ -62,16 +57,13 @@ public class SessionRepository {
     }
 
     /* 삭제 */
-    public void sessionTokenDelete(String key) throws DeleteException {
-        Boolean isSuccess = sessionRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
-        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
+    public void sessionTokenDelete(String key) {
+        sessionRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
     }
-    public void accessTokenDelete(String key) throws DeleteException {
-        Boolean isSuccess = accessRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
-        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
+    public void accessTokenDelete(String key) {
+        accessRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
     }
-    public void refreshTokenDelete(String key) throws DeleteException {
-        Boolean isSuccess = refreshRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
-        if (Boolean.FALSE.equals(isSuccess)) throw new DeleteException(ErrorCode.NOT_DELETE_REDIS);
+    public void refreshTokenDelete(String key) {
+        refreshRedisTemplate.expire(key, 0, TimeUnit.MILLISECONDS);
     }
 }

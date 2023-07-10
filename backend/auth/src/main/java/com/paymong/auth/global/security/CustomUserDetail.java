@@ -1,12 +1,11 @@
 package com.paymong.auth.global.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.paymong.auth.auth.entity.Member;
-import com.paymong.auth.auth.entity.Role;
+import com.paymong.auth.entity.Member;
+import com.paymong.auth.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,15 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetail implements UserDetails {
     private String memberId;
     private String password;
-    private List<String> roles = new ArrayList<>();    //권한 목록
+    private List<String> roles;
 
-    public static UserDetails of(Member member, List<Role> roleList) {
-        String memberId = member.getMemberId().toString();
-        String password = member.getPassword();
-        List<String> roles = roleList.stream()
-                .map((role) -> role.getCode().getName())
-                .collect(Collectors.toList());
-
+    public static UserDetails of(String memberId, String password, List<String> roles) {
         return CustomUserDetail.builder()
             .memberId(memberId)
             .password(password)

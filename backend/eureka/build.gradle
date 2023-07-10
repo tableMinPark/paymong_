@@ -1,6 +1,4 @@
 dependencies {
-    // core-module
-    implementation project(path: ':core')
     // eureka
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
 }

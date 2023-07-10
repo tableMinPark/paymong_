@@ -1,28 +1,30 @@
 package com.paymong.auth.auth.service;
 
-import com.paymong.auth.auth.entity.Member;
-import com.paymong.auth.auth.entity.PayPoint;
-import com.paymong.auth.auth.repository.MemberRepository;
-import com.paymong.auth.auth.repository.PayPointRepository;
+import com.paymong.auth.entity.CommonCode;
+import com.paymong.auth.entity.Member;
+import com.paymong.auth.entity.PayPoint;
+import com.paymong.auth.entity.Role;
+import com.paymong.auth.repository.MemberRepository;
+import com.paymong.auth.repository.PayPointRepository;
+import com.paymong.auth.repository.RoleRepository;
 import com.paymong.auth.global.code.AuthFailCode;
 import com.paymong.auth.global.redis.Access;
 import com.paymong.auth.global.redis.Refresh;
 import com.paymong.auth.global.redis.Session;
 import com.paymong.auth.global.redis.SessionRepository;
 import com.paymong.auth.global.security.Token;
-import com.paymong.auth.global.security.TokenProvider;
+import com.paymong.auth.global.jwt.TokenProvider;
 import com.paymong.core.code.DeviceCode;
-import com.paymong.core.exception.failException.InvalidFailException;
+import com.paymong.core.code.RoleCode;
+import com.paymong.core.exception.fail.InvalidFailException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,16 +35,41 @@ class AuthServiceTest {
     @Autowired
     private PayPointRepository payPointRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private SessionRepository sessionRepository;
     @Autowired
     private TokenProvider tokenProvider;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Value("${jwt.access_token_expired}")
     private Long accessTokenExpired;
     @Value("${jwt.refresh_token_expired}")
     private Long refreshTokenExpired;
+
+    @Test
+    @Transactional
+    void registerMemberTest() {
+        String playerId = "a_test";
+
+        Member registerMember = memberRepository.save(Member.builder()
+                .playerId(playerId)
+                .build());
+
+        Long memberId = registerMember.getMemberId();
+        payPointRepository.save(PayPoint.builder()
+                .memberId(memberId)
+                .point(0L)
+                .build());
+
+        roleRepository.save(Role.builder()
+                .memberId(memberId)
+                .code(CommonCode.builder()
+                        .code(RoleCode.USER.getCode())
+                        .build())
+                .build());
+
+        assertNotNull(registerMember.getMemberId());
+    }
 
     @Test
     @Transactional
@@ -60,17 +87,21 @@ class AuthServiceTest {
         Member member = memberRepository.findByPlayerId(playerId)
                 .orElseGet(() -> {
                     // 없으면 등록 (회원 등록)
-                    String password = passwordEncoder.encode(UUID.randomUUID().toString());
-
                     Member registerMember = memberRepository.save(Member.builder()
                             .playerId(playerId)
-                            .password(password)
                             .build());
 
                     Long memberId = registerMember.getMemberId();
                     payPointRepository.save(PayPoint.builder()
                             .point(0L)
                             .memberId(memberId)
+                            .build());
+
+                    roleRepository.save(Role.builder()
+                            .memberId(memberId)
+                            .code(CommonCode.builder()
+                                    .code(RoleCode.USER.getCode())
+                                    .build())
                             .build());
 
                     return registerMember;
@@ -129,47 +160,6 @@ class AuthServiceTest {
         assertFalse(sessionRepository.findSessionTokenById(memberId).isPresent());
     }
 
-    String beforeReissueTest() {
-        String playerId = "a_test";
-        DeviceCode deviceCode = DeviceCode.APP;
-
-        String password = passwordEncoder.encode(UUID.randomUUID().toString());
-
-        Member member = memberRepository.findByPlayerId(playerId)
-                .orElseGet(() -> {
-                    // 없으면 등록 (회원 등록)
-                    Member registerMember = memberRepository.save(Member.builder()
-                            .memberId(0L)
-                            .playerId(playerId)
-                            .password(password)
-                            .build());
-                    payPointRepository.save(PayPoint.builder()
-                            .point(0L)
-                            .memberId(0L)
-                            .build());
-
-                    return registerMember;
-                });
-
-        String memberId = String.valueOf(0L);
-        String refreshToken = tokenProvider.generateRefreshToken(memberId);
-
-        Session session = Session.builder()
-                .memberId(memberId)
-                .accessToken(new HashMap<>())
-                .refreshToken(new HashMap<>())
-                .build();
-        session.getRefreshToken().put(deviceCode, refreshToken);
-
-        sessionRepository.sessionTokenSave(memberId, session);
-        sessionRepository.refreshTokenSave(refreshToken, Refresh.builder()
-                        .memberId(memberId)
-                .deviceCode(deviceCode)
-                .refreshToken(refreshToken)
-                .build(), refreshTokenExpired);
-
-        return String.format("Bearer %s", refreshToken);
-    }
     @Test
     @Transactional
     void reissueTest() {
@@ -229,6 +219,57 @@ class AuthServiceTest {
         sessionRepository.refreshTokenDelete(refreshToken);
     }
 
+
+    /* BEFORE EACH TEST METHOD */
+    String beforeReissueTest() {
+        String playerId = "a_test";
+        DeviceCode deviceCode = DeviceCode.APP;
+
+        Member member = memberRepository.findByPlayerId(playerId)
+                .orElseGet(() -> {
+                    // 없으면 등록 (회원 등록)
+                    Long memberId = 0L;
+                    Member registerMember = memberRepository.save(Member.builder()
+                            .memberId(memberId)
+                            .playerId(playerId)
+                            .build());
+
+                    payPointRepository.save(PayPoint.builder()
+                            .point(0L)
+                            .memberId(memberId)
+                            .build());
+
+                    roleRepository.save(Role.builder()
+                            .memberId(memberId)
+                            .code(CommonCode.builder()
+                                    .code(RoleCode.USER.getCode())
+                                    .build())
+                            .build());
+
+                    return registerMember;
+                });
+
+        String memberId = String.valueOf(member.getMemberId());
+        String refreshToken = tokenProvider.generateRefreshToken(memberId);
+
+        Session session = Session.builder()
+                .memberId(memberId)
+                .accessToken(new HashMap<>())
+                .refreshToken(new HashMap<>())
+                .build();
+        session.getRefreshToken().put(deviceCode, refreshToken);
+
+        sessionRepository.sessionTokenSave(memberId, session);
+        sessionRepository.refreshTokenSave(refreshToken, Refresh.builder()
+                .memberId(memberId)
+                .deviceCode(deviceCode)
+                .refreshToken(refreshToken)
+                .build(), refreshTokenExpired);
+
+        return String.format("Bearer %s", refreshToken);
+    }
+
+    /* TOKEN */
     private Token generateToken(String memberId, DeviceCode deviceCode) {
         String accessToken = tokenProvider.generateAccessToken(memberId);
         String refreshToken = tokenProvider.generateRefreshToken(memberId);

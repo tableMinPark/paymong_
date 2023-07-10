@@ -1,10 +1,9 @@
 package com.paymong.auth.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.paymong.auth.global.security.CustomUserDetailService;
-import com.paymong.auth.global.security.TokenAuthenticationFilter;
-import com.paymong.auth.global.security.TokenExceptionFilter;
-import com.paymong.auth.global.security.TokenProvider;
+import com.paymong.auth.global.security.*;
+import com.paymong.core.code.RoleCode;
+import com.paymong.auth.global.security.AccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final TokenProvider tokenProvider;
-    private final CustomUserDetailService customUserDetailService;
     private final ObjectMapper objectMapper;
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,13 +30,14 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
 
-            .authorizeRequests() // 요청에 대한 사용권한 체크
-//            .antMatchers("/auth/**").hasAnyAuthority("ADMIN")
-//            .antMatchers("/auth/login", "/auth/login/watch", "/auth/reissue").permitAll()
-            .anyRequest().permitAll()
+            .authorizeRequests()
+            .antMatchers("/auth/admin/**").hasAnyAuthority(RoleCode.ADMIN.getName())
+            .antMatchers("/auth/login", "/auth/login/watch", "/auth/reissue").permitAll()
 
             .and()
             .exceptionHandling()
+            .accessDeniedHandler(accessDeniedHandler)
+            .authenticationEntryPoint(authenticationEntryPoint)
 
             .and()
             .logout().disable()
@@ -45,7 +45,7 @@ public class SecurityConfig {
             .and()
             .formLogin().disable();
 
-        http.addFilterBefore(new TokenAuthenticationFilter(tokenProvider, customUserDetailService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenAuthenticationFilter(objectMapper), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new TokenExceptionFilter(objectMapper), TokenAuthenticationFilter.class);
         return http.build();
     }
