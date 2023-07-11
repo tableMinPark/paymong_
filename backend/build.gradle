@@ -50,17 +50,22 @@ subprojects {
     }
 }
 
-project(':core') {
-    bootJar { enabled = false }
-    jar { enabled = true }
-}
-
 project(':eureka') {
     bootJar { enabled = true }
     jar { enabled = false }
 }
 
 project(':gateway') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
+
+project(':core') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+}
+
+project(':auth') {
     bootJar { enabled = true }
     jar { enabled = false }
 }

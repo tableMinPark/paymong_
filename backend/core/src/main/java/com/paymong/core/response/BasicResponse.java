@@ -1,15 +1,10 @@
 package com.paymong.core.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Builder
+@Getter
+@AllArgsConstructor
 public class BasicResponse {
-    String status;
-
-    public BasicResponse(String status) {
-        this.status = status;
-    }
+    private final String status;
 }
-
-
-

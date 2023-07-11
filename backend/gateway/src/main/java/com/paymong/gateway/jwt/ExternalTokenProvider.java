@@ -11,15 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
+@Component
 @RequiredArgsConstructor
-public class TokenProvider {
+public class ExternalTokenProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.external.secret}")
     private String JWT_KEY;
 
-    public Claims extractAllClaims(String token) { // 2
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
             .setSigningKey(getSigningKey(JWT_KEY))
             .build()
@@ -27,8 +27,8 @@ public class TokenProvider {
             .getBody();
     }
 
-    public String getUsername(String token) {
-        return extractAllClaims(token).get("username", String.class);
+    public String getMemberId(String token) {
+        return extractAllClaims(token).get("memberId", String.class);
     }
 
     private Key getSigningKey(String secretKey) {
@@ -39,12 +39,5 @@ public class TokenProvider {
     public Boolean isTokenExpired(String token) {
         Date expiration = extractAllClaims(token).getExpiration();
         return expiration.before(new Date());
-    }
-
-
-    public long getRemainMilliSeconds(String token) {
-        Date expiration = extractAllClaims(token).getExpiration();
-        Date now = new Date();
-        return expiration.getTime() - now.getTime();
     }
 }

@@ -7,36 +7,33 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 @Slf4j
-public class MongInformationHeaderFilter extends AbstractGatewayFilterFactory<MongInformationHeaderFilter.Config> {
+public class MongInformationFilter extends AbstractGatewayFilterFactory<MongInformationFilter.Config> {
 
     @Data
     public static class Config {
         private boolean preLogger;
     }
 
-    public MongInformationHeaderFilter() { super(Config.class); }
+    public MongInformationFilter() { super(Config.class); }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
-                String id = request.getId();
-                String path = request.getPath().value();
-                String memberId = request.getHeaders().get("MemberId").get(0);
+            String memberId = exchange.getAttribute("memberId");
 
-                // memberId를 기준으로 redis에서 mongId 조회
+            // memberId를 기준으로 redis 에서 mongId 조회 후 mongId 헤더에 삽입
+            String mongId = "1";
 
-                String mongId = "1";
-
-                request.mutate().header("mongId", mongId).build();
+            exchange.getAttributes().put("mongId", mongId);
 
             if (config.preLogger) {
-                log.info("MongInformationHeaderFilter(request) : {} : {} : {} : {}", id, path, memberId, mongId);
+                String id = request.getId();
+                String path = request.getPath().value();
+                log.info("MongInformationHeaderFilter : 몽 정보 추출 : {} : {} : {} : {}", id, path, memberId, mongId);
             }
 
             return chain.filter(exchange);
