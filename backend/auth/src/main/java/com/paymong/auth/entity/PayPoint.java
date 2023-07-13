@@ -20,5 +20,5 @@ public class PayPoint {
     private Long memberId;
 
     @Column(name = "point")
-    private Long point;
+    private Integer point;
 }

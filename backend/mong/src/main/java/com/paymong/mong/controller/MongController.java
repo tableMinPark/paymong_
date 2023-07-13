@@ -42,7 +42,7 @@ public class MongController {
     @PostMapping("")
     private ResponseEntity<Object> registerMong(@RequestBody RegisterMongReqDto registerMongReqDto) {
         if (registerMongReqDto.getSleepStart() == null || registerMongReqDto.getSleepEnd() == null)
-            throw new InvalidFailException(MongFailCode.INVALID_TIME);
+            throw new InvalidFailException(MongFailCode.INVALID_INVALID_REQUEST_DTO);
 
         mongService.registerMong(registerMongReqDto);
         return ResponseEntity.ok().body(new SuccessResponse(null));
