@@ -1,4 +1,4 @@
-package com.paymong.auth.global.security;
+package com.paymong.mong.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymong.core.code.BasicFailCode;

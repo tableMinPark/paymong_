@@ -1,4 +1,4 @@
-package com.paymong.auth.controller;
+package com.paymong.mong.controller;
 
 import com.paymong.core.code.BasicFailCode;
 import com.paymong.core.code.ErrorCode;
@@ -18,7 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
-public class AuthControllerAdvice {
+public class MongControllerAdvice {
     @ExceptionHandler({ InvalidFailException.class })
     private ResponseEntity<Object> handleInvalidFailException(InvalidFailException e) {
         BasicFailCode failCode = e.getFailCode();
@@ -30,13 +30,6 @@ public class AuthControllerAdvice {
     private ResponseEntity<Object> handleNotFoundFailException(NotFoundFailException e) {
         BasicFailCode failCode = e.getFailCode();
         log.info("handleNotFoundFailException : {} : {}", failCode.getTitle(), failCode.getContent());
-        return ResponseEntity.status(failCode.getHttpStatus()).body(new FailResponse(failCode));
-    }
-
-    @ExceptionHandler({ UnAuthFailException.class })
-    private ResponseEntity<Object> handleUnAuthFailException(UnAuthFailException e) {
-        BasicFailCode failCode = e.getFailCode();
-        log.info("handleUnAuthFailException : {} : {}", failCode.getTitle(), failCode.getContent());
         return ResponseEntity.status(failCode.getHttpStatus()).body(new FailResponse(failCode));
     }
 
