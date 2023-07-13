@@ -69,3 +69,8 @@ project(':auth') {
     bootJar { enabled = true }
     jar { enabled = false }
 }
+
+project(':collect') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
