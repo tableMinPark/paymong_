@@ -25,7 +25,7 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         String internalToken = request.getHeader("InternalToken");
-        log.error("AuthenticationEntryPoint : 인증 불가 : {}", internalToken);
+        log.info("AuthenticationEntryPoint : 인증 불가 : {}", internalToken);
         setFailResponse(response, FailCode.UN_AUTHENTICATION);
     }
 
