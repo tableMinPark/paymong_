@@ -25,7 +25,7 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
         String internalToken = request.getHeader("InternalToken");
-        log.error("AuthenticationEntryPoint : 인가 불가 : {}", internalToken);
+        log.info("AuthenticationEntryPoint : 인가 불가 : {}", internalToken);
         setFailResponse(response, FailCode.FORBIDDEN);
     }
 
