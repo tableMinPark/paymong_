@@ -17,6 +17,7 @@ public enum FailCode implements BasicFailCode {
     */
 
     // Basic
+    INVALID_ARGS(HttpStatus.BAD_REQUEST, "잘못된 요청", "잘못된 입력 값입니다."),
     NOT_FOUND(HttpStatus.NOT_FOUND, "잘못된 요청", "잘못된 URI 요청입니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한 없음", "현재 권한으로는 접근할 수 없습니다."),
     UN_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "인증 불가", "회원 인증을 할 수 없습니다."),

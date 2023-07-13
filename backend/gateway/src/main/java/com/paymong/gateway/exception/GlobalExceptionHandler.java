@@ -32,22 +32,24 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         String path = request.getPath().value();
 
         if (e instanceof NullPointerException) {
-            log.error("AuthorizationHeaderFilter : 헤더에 엑세스 토큰 없음 : {} : {} : {}", id, method, path);
+            log.info("AuthorizationHeaderFilter : 헤더에 엑세스 토큰 없음 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.NOT_FOUND_TOKEN);
         } else if (e instanceof InvalidException) {
-            log.error("AuthorizationHeaderFilter : 유효하지 않은 토큰 : {} : {} : {}", id, method, path);
+            log.info("AuthorizationHeaderFilter : 유효하지 않은 토큰 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, ((InvalidException) e).getFailCode());
         } else if (e instanceof HeaderException) {
-            log.error("AuthorizationHeaderFilter : 헤더에 토큰 저장 불가 : {} : {} : {}", id, method, path);
+            log.info("AuthorizationHeaderFilter : 헤더에 토큰 저장 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, ((HeaderException) e).getFailCode());
         } else if (e instanceof NotFoundException) {
-            log.error("AuthorizationHeaderFilter : 마이크로 서비스 접근 불가 : {} : {} : {}", id, method, path);
+            log.info("AuthorizationHeaderFilter : 마이크로 서비스 접근 불가 : {} : {} : {}", id, method, path);
             return setErrorResponse(exchange, GatewayErrorCode.INVALID_SERVER);
         } else if (e instanceof RuntimeException) {
-            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
+            e.printStackTrace();
+            log.info("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.UN_AUTHENTICATION);
         } else {
-            log.error("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
+            e.printStackTrace();
+            log.info("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, GatewayFailCode.UN_AUTHENTICATION);
         }
     }

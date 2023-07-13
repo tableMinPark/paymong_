@@ -1,5 +1,7 @@
 package com.paymong.gateway.filter;
 
+import com.paymong.gateway.entity.Mong;
+import com.paymong.gateway.repository.MongRepository;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -10,13 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class MongInformationFilter extends AbstractGatewayFilterFactory<MongInformationFilter.Config> {
+    private final MongRepository mongRepository;
 
     @Data
     public static class Config {
         private boolean preLogger;
     }
 
-    public MongInformationFilter() { super(Config.class); }
+    public MongInformationFilter(MongRepository mongRepository) {
+        super(Config.class);
+        this.mongRepository = mongRepository;
+    }
 
     @Override
     public GatewayFilter apply(Config config) {
@@ -24,16 +30,16 @@ public class MongInformationFilter extends AbstractGatewayFilterFactory<MongInfo
             ServerHttpRequest request = exchange.getRequest();
 
             String memberId = exchange.getAttribute("memberId");
-
-            // memberId를 기준으로 redis 에서 mongId 조회 후 mongId 헤더에 삽입
-            String mongId = "1";
+            Mong mong = mongRepository.findByMemberId(Long.parseLong(memberId))
+                    .orElseGet(() -> Mong.builder().mongId(-1L).build());
+            String mongId = String.valueOf(mong.getMongId());
 
             exchange.getAttributes().put("mongId", mongId);
 
             if (config.preLogger) {
                 String id = request.getId();
                 String path = request.getPath().value();
-                log.info("MongInformationHeaderFilter : 몽 정보 추출 : {} : {} : {} : {}", id, path, memberId, mongId);
+                log.info("MongInformationFilter : 몽 정보 추출 : {} : {} : {} : {}", id, path, memberId, mongId);
             }
 
             return chain.filter(exchange);
