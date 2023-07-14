@@ -1,4 +1,4 @@
-package com.paymong.mong.controller;
+package com.paymong.paypoint.controller;
 
 import com.paymong.core.code.BasicFailCode;
 import com.paymong.core.code.ErrorCode;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
-public class MongControllerAdvice {
+public class PayPointControllerAdvice {
     @ExceptionHandler({ InvalidFailException.class })
     private ResponseEntity<Object> handleInvalidFailException(InvalidFailException e) {
         BasicFailCode failCode = e.getFailCode();

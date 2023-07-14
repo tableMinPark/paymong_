@@ -4,10 +4,16 @@ import com.paymong.core.code.BasicFailCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class FailResponse extends BasicResponse {
-    private final FailResponseData data;
+    private FailResponseData data;
+
+    public FailResponse(FailResponseData data) {
+        this.data = data;
+    }
 
     public FailResponse(BasicFailCode failCode) {
         super("fail");

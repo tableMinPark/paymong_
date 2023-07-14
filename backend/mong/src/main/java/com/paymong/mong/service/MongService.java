@@ -14,7 +14,6 @@ import com.paymong.mong.repository.CommonCodeRepository;
 import com.paymong.mong.repository.MongRepository;
 import com.paymong.mong.dto.MongStatusDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,27 +27,6 @@ import java.util.Random;
 public class MongService {
     private final MongRepository mongRepository;
     private final CommonCodeRepository commonCodeRepository;
-
-    @Value("${mong.register.level1}")
-    private Double decLevel1;
-
-    @Value("${mong.register.level2.tier1}")
-    private Double decLevel2_1;
-    @Value("${mong.register.level2.tier2}")
-    private Double decLevel2_2;
-    @Value("${mong.register.level2.tier3}")
-    private Double decLevel2_3;
-    @Value("${mong.register.level2.tier4}")
-    private Double decLevel2_4;
-
-    @Value("${mong.register.level3.tier1}")
-    private Double decLevel3_1;
-    @Value("${mong.register.level3.tier2}")
-    private Double decLevel3_2;
-    @Value("${mong.register.level3.tier3}")
-    private Double decLevel3_3;
-    @Value("${mong.register.level3.tier4}")
-    private Double decLevel3_4;
 
     @Transactional
     public FindMongResDto findMong() throws RuntimeException {
@@ -88,44 +66,11 @@ public class MongService {
         Mong mong = mongRepository.findById(mongId)
                 .orElseThrow(() -> new NotFoundFailException(MongFailCode.NOT_FOUND_MONG));
 
-        int level = Integer.parseInt(mong.getMongCode().substring(2, 3));
-        int tier = Integer.parseInt(mong.getMongCode().substring(3, 4));
-        double decrease = 0.0;
-
-        switch (level) {
-            case 0:
-                break;
-            case 1:
-                decrease = decLevel1;
-                break;
-            case 2:
-                if (tier == 1)
-                    decrease = decLevel2_1;
-                else if (tier == 2)
-                    decrease = decLevel2_2;
-                else if (tier == 3)
-                    decrease = decLevel2_3;
-                else
-                    decrease = decLevel2_4;
-                break;
-            case 3:
-                if (tier == 1)
-                    decrease = decLevel3_1;
-                else if (tier == 2)
-                    decrease = decLevel3_2;
-                else if (tier == 3)
-                    decrease = decLevel3_3;
-                else
-                    decrease = decLevel3_4;
-                break;
-            default:
-                throw new InvalidFailException(MongFailCode.INVALID_MONG_LEVEL);
-        }
 
         return FindMongStatusResDto.of(
                 mong.getMongId(),
                 mong.getName(),
-                MongStatusDto.of(mong, decrease));
+                MongStatusDto.of(mong));
     }
 
     @Transactional

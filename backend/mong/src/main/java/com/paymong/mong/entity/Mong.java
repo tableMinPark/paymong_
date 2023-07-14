@@ -75,6 +75,9 @@ public class Mong {
     @Column(name = "active")
     private Boolean active;
 
+    @Column(name = "is_sleep")
+    private Boolean isSleep;
+
     @Column(name = "reg_dt")
     @CreationTimestamp
     private LocalDateTime regDt;
