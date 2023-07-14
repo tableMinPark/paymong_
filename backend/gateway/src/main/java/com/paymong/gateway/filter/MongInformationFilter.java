@@ -39,7 +39,8 @@ public class MongInformationFilter extends AbstractGatewayFilterFactory<MongInfo
             if (config.preLogger) {
                 String id = request.getId();
                 String path = request.getPath().value();
-                log.info("MongInformationFilter : 몽 정보 추출 : {} : {} : {} : {}", id, path, memberId, mongId);
+                String method = request.getMethodValue();
+                log.info("{} : MongInformationFilter : {} : {} : 회원 - {} : 몽 - {} : 몽 관련 정보 추출", id, method, path, memberId, mongId);
             }
 
             return chain.filter(exchange);

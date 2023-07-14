@@ -21,12 +21,12 @@ dependencies {
 
 tasks.register('copyPrivate', Copy) {
     copy {
-        from '../paymong_sub/pay_point'
+        from '../paymong_sub/paypoint'
         include "application.yml"
         into 'src/main/resources'
     }
     copy {
-        from '../paymong_sub/pay_point'
+        from '../paymong_sub/paypoint'
         include "application.yml"
         into 'src/test/resources'
     }

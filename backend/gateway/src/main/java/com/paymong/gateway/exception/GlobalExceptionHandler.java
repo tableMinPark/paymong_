@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.ConnectException;
+
 @Slf4j
 @Component
 @Order(-1)
@@ -40,13 +42,9 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         } else if (e instanceof HeaderException) {
             log.info("AuthorizationHeaderFilter : 헤더에 토큰 저장 불가 : {} : {} : {}", id, method, path);
             return setFailResponse(exchange, ((HeaderException) e).getFailCode());
-        } else if (e instanceof NotFoundException) {
+        } else if (e instanceof NotFoundException || e instanceof ConnectException) {
             log.info("AuthorizationHeaderFilter : 마이크로 서비스 접근 불가 : {} : {} : {}", id, method, path);
             return setErrorResponse(exchange, GatewayErrorCode.INVALID_SERVER);
-        } else if (e instanceof RuntimeException) {
-            e.printStackTrace();
-            log.info("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);
-            return setFailResponse(exchange, GatewayFailCode.UN_AUTHENTICATION);
         } else {
             e.printStackTrace();
             log.info("AuthorizationHeaderFilter : 인증 불가 : {} : {} : {}", id, method, path);

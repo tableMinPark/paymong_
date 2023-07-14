@@ -70,7 +70,7 @@ public class AuthService {
                     Long memberId = registerMember.getMemberId();
                     payPointRepository.save(PayPoint.builder()
                             .memberId(memberId)
-                            .point(0L)
+                            .point(0)
                             .build());
 
                     // 역할 저장
