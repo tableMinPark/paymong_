@@ -6,4 +6,5 @@ include 'auth'
 include 'mong'
 include 'collect'
 include 'paypoint'
+include 'lifecycle'
 

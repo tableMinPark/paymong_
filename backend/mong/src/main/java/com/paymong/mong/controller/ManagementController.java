@@ -1,6 +1,6 @@
 package com.paymong.mong.controller;
 
-import com.paymong.core.response.SuccessResponse;
+import com.paymong.global.response.SuccessResponse;
 import com.paymong.mong.dto.request.ModifyEatFoodReqDto;
 import com.paymong.mong.dto.request.ModifyEatSnackReqDto;
 import com.paymong.mong.dto.request.ModifyTrainingReqDto;

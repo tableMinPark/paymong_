@@ -1,6 +1,6 @@
 package com.paymong.mong.dto.response;
 
-import com.paymong.mong.dto.MongStatusDto;
+import com.paymong.mong.dto.common.MongStatusDto;
 import lombok.Builder;
 import lombok.Data;
 

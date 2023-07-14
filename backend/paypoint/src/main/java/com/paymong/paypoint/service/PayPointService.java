@@ -1,15 +1,15 @@
 package com.paymong.paypoint.service;
 
-import com.paymong.core.exception.fail.InvalidFailException;
-import com.paymong.core.exception.fail.NotFoundFailException;
+import com.paymong.global.exception.fail.InvalidFailException;
+import com.paymong.global.exception.fail.NotFoundFailException;
 import com.paymong.paypoint.dto.request.RegisterPayPointReqDto;
 import com.paymong.paypoint.dto.response.FindFoodAndSnack;
 import com.paymong.paypoint.dto.response.FindPayPointInfoResDto;
 import com.paymong.paypoint.dto.response.FindPayPointResDto;
 import com.paymong.paypoint.entity.PayPoint;
 import com.paymong.paypoint.entity.PayPointHistory;
-import com.paymong.paypoint.global.code.PayPointFailCode;
-import com.paymong.paypoint.global.security.CustomUserDetail;
+import com.paymong.global.code.PayPointFailCode;
+import com.paymong.global.security.CustomUserDetail;
 import com.paymong.paypoint.repository.CommonCodeRepository;
 import com.paymong.paypoint.repository.FoodAndSnackMapping;
 import com.paymong.paypoint.repository.PayPointHistoryRepository;

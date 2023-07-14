@@ -1,13 +1,12 @@
 package com.paymong.collect.controller;
 
-import com.paymong.core.code.BasicFailCode;
-import com.paymong.core.code.ErrorCode;
-import com.paymong.core.code.FailCode;
-import com.paymong.core.exception.fail.InvalidFailException;
-import com.paymong.core.exception.fail.NotFoundFailException;
-import com.paymong.core.exception.fail.UnAuthFailException;
-import com.paymong.core.response.ErrorResponse;
-import com.paymong.core.response.FailResponse;
+import com.paymong.global.code.BasicFailCode;
+import com.paymong.global.code.ErrorCode;
+import com.paymong.global.code.FailCode;
+import com.paymong.global.exception.fail.InvalidFailException;
+import com.paymong.global.exception.fail.NotFoundFailException;
+import com.paymong.global.response.ErrorResponse;
+import com.paymong.global.response.FailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

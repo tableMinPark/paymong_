@@ -1,15 +1,16 @@
 package com.paymong.mong.service;
 
-import com.paymong.core.exception.fail.InvalidFailException;
-import com.paymong.core.exception.fail.NotFoundFailException;
-import com.paymong.mong.dto.MongStatusDto;
+import com.paymong.global.exception.fail.InvalidFailException;
+import com.paymong.global.exception.fail.NotFoundFailException;
+import com.paymong.mong.dto.common.MongStatusDto;
 import com.paymong.mong.dto.request.*;
 import com.paymong.mong.dto.response.*;
 import com.paymong.mong.entity.*;
-import com.paymong.mong.global.client.PayPointService;
-import com.paymong.mong.global.code.MongActiveCode;
-import com.paymong.mong.global.code.MongFailCode;
-import com.paymong.mong.global.security.CustomUserDetail;
+import com.paymong.client.service.PayPointService;
+import com.paymong.client.dto.request.RegisterPayPointReqDto;
+import com.paymong.global.code.MongActiveCode;
+import com.paymong.global.code.MongFailCode;
+import com.paymong.global.security.CustomUserDetail;
 import com.paymong.mong.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

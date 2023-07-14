@@ -1,10 +1,8 @@
 package com.paymong.auth.entity;
 
-import com.paymong.core.code.RoleCode;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Builder
 @Getter

@@ -1,18 +1,18 @@
 package com.paymong.mong.service;
 
-import com.paymong.core.exception.fail.InvalidFailException;
-import com.paymong.core.exception.fail.NotFoundFailException;
+import com.paymong.global.exception.fail.InvalidFailException;
+import com.paymong.global.exception.fail.NotFoundFailException;
 import com.paymong.mong.dto.request.RegisterMongReqDto;
 import com.paymong.mong.dto.response.FindMongInfoResDto;
 import com.paymong.mong.dto.response.FindMongResDto;
 import com.paymong.mong.dto.response.FindMongStatusResDto;
 import com.paymong.mong.entity.CommonCode;
 import com.paymong.mong.entity.Mong;
-import com.paymong.mong.global.code.MongFailCode;
-import com.paymong.mong.global.security.CustomUserDetail;
+import com.paymong.global.code.MongFailCode;
+import com.paymong.global.security.CustomUserDetail;
 import com.paymong.mong.repository.CommonCodeRepository;
 import com.paymong.mong.repository.MongRepository;
-import com.paymong.mong.dto.MongStatusDto;
+import com.paymong.mong.dto.common.MongStatusDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

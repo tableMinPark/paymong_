@@ -1,12 +1,12 @@
 package com.paymong.paypoint.controller;
 
-import com.paymong.core.exception.fail.InvalidFailException;
-import com.paymong.core.response.SuccessResponse;
+import com.paymong.global.exception.fail.InvalidFailException;
+import com.paymong.global.response.SuccessResponse;
 import com.paymong.paypoint.dto.request.RegisterPayPointReqDto;
 import com.paymong.paypoint.dto.response.FindFoodAndSnack;
 import com.paymong.paypoint.dto.response.FindPayPointInfoResDto;
 import com.paymong.paypoint.dto.response.FindPayPointResDto;
-import com.paymong.paypoint.global.code.PayPointFailCode;
+import com.paymong.global.code.PayPointFailCode;
 import com.paymong.paypoint.service.PayPointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

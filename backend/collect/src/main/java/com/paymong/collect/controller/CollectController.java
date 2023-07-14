@@ -5,7 +5,7 @@ import com.paymong.collect.dto.request.RegisterMongCollectReqDto;
 import com.paymong.collect.dto.response.FindMapCollectResDto;
 import com.paymong.collect.dto.response.FindMongCollectResDto;
 import com.paymong.collect.service.CollectService;
-import com.paymong.core.response.SuccessResponse;
+import com.paymong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
