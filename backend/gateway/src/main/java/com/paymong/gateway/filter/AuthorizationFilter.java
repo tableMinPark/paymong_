@@ -71,7 +71,8 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             if (config.preLogger) {
                 String id = request.getId();
                 String path = request.getPath().value();
-                log.info("AuthorizationFilter : 회원 정보 추출 : {} : {} : {} : {} : {}", id, path, accessToken, memberId, roles);
+                String method = request.getMethodValue();
+                log.info("{} : AuthorizationFilter : 회원 - {} : 권한 - {} : 회원 정보 추출", id, memberId, roles);
             }
 
             return chain.filter(exchange);

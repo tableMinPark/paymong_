@@ -49,7 +49,8 @@ public class PackageFilter extends AbstractGatewayFilterFactory<com.paymong.gate
                 request.mutate().header("InternalToken", internalToken).build();
 
                 if (config.preLogger) {
-                    log.info("PackageFilter : {} : {} : {} : {}", memberId, roles, mongId, internalToken);
+                    String id = request.getId();
+                    log.info("{} : PackageFilter : 회원 - {} : 권한 - {} : 몽 - {} : 추출 정보 JWT 토큰으로 패키징", id, memberId, roles, mongId);
                 }
             } catch (JsonProcessingException e) {
                 throw new HeaderException(GatewayFailCode.NOT_REIGSTER_TOKEN);

@@ -37,22 +37,24 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
             if (config.preLogger) {
                 String id = request.getId();
                 String path = request.getPath().value();
+                String method = request.getMethodValue();
 
                 InetSocketAddress connection = request.getLocalAddress();
                 String address = connection.getAddress().getHostAddress();
                 String hostName = connection.getHostName();
 
-                log.info("GlobalFilter - in : {} : {} : {} : {}", id, path, address, hostName);
+                log.info("{} : GlobalFilter(in) : {} : {} : 아이피 - {} : 호스트네임 - {}", id, method, path, address, hostName);
             }
 
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 ServerHttpResponse response = exchange.getResponse();
 
                 if (config.postLogger) {
+                    String id = request.getId();
                     int statusCode = Objects.requireNonNull(response.getStatusCode()).value();
                     long during = Duration.between(requestTime, LocalDateTime.now()).getNano();
 
-                    log.info("GlobalFilter - out : {} : {}ns", statusCode, during);
+                    log.info("{} : GlobalFilter(out) : 상태코드 - {} : 요청시간 - {} s", id, statusCode, during / 1000000000.0);
                 }
             }));
         };
