@@ -44,7 +44,6 @@ public class TokenExceptionFilter extends GenericFilterBean {
         }
     }
 
-
     public void setFailResponse(HttpServletResponse response, BasicFailCode failCode) {
         response.setContentType("application/json; charset=UTF-8");
 

@@ -22,14 +22,13 @@ public class PayPointService {
 
     public Boolean registerPayPoint(RegisterPayPointReqDto registerPayPointReqDto) throws RuntimeException {
         try {
-            FindPayPointResDto findPayPointResDto = objectMapper.convertValue(payPointClient.registerPayPoint(registerPayPointReqDto), FindPayPointResDto.class);
-            Boolean data = findPayPointResDto.getData();
-            return data;
+            FindPayPointResDto findPayPointResDto = objectMapper.convertValue(payPointClient.registerPayPoint(registerPayPointReqDto).getBody(), FindPayPointResDto.class);
+            return findPayPointResDto.getData();
         } catch (FeignException e) {
             FeignClientCode code = FeignClientHandler.getCode(e);
 
             if (code == FeignClientCode.FAIL)
-                throw new InvalidFailException(MongFailCode.REGISTER_PAY_POINT);
+                throw new InvalidFailException(MongFailCode.CLIENT_PAY_POINT);
             else
                 throw new RuntimeException();
         }

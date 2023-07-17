@@ -50,9 +50,4 @@ public class InternalTokenProvider {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-    public Boolean isTokenExpired(String token) {
-        Date expiration = extractAllClaims(token).getExpiration();
-        return expiration.before(new Date());
-    }
 }

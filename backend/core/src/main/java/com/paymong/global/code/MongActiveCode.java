@@ -22,7 +22,6 @@ public enum MongActiveCode {
     'AT013','충전','AT','활동'
     'AT014','충전 중지','AT','활동'
      */
-
     FOOD("AT000"),
     SNACK("AT001"),
     POOP("AT002"),
@@ -39,5 +38,5 @@ public enum MongActiveCode {
     CHARGE("AT013"),
     STOP_CHARGE("AT014");
 
-    public String code;
+    public final String code;
 }

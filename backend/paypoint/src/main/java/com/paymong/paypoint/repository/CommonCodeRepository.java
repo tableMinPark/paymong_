@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommonCodeRepository extends JpaRepository<CommonCode, Long> {
+public interface CommonCodeRepository extends JpaRepository<CommonCode, String> {
     // 멀티 인덱스와 단일 인덱스 적용
     @Query(value =
             "SELECT c.code as foodCode, c.name as name, p.price as price, ph.reg_dt as lastBuy " +

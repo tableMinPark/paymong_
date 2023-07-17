@@ -29,24 +29,6 @@ public class InternalTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateAccessToken(String memberId, String roles) {
-        return doGenerateToken(memberId, roles, ACCESS_TOKEN_EXPIRED);
-    }
-
-    private String doGenerateToken(String memberId, String roles, Long expireTime) {
-        Claims claims = Jwts.claims();
-        claims.put("memberId", memberId);
-        claims.put("roles", roles);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
-                .signWith(getSigningKey(JWT_KEY), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-
     public String generateAccessToken(String memberId, String roles, String mongId) {
         return doGenerateToken(memberId, roles, mongId, ACCESS_TOKEN_EXPIRED);
     }

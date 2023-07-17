@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class FindFoodAndSnack {
+public class FindFoodAndSnackResDto {
     private String name;
     private String foodCode;
     private Integer price;
     private LocalDateTime lastBuy;
 
-    public static FindFoodAndSnack of(FoodAndSnackMapping foodAndSnackMapping) {
-        return FindFoodAndSnack.builder()
+    public static FindFoodAndSnackResDto of(FoodAndSnackMapping foodAndSnackMapping) {
+        return FindFoodAndSnackResDto.builder()
                 .name(foodAndSnackMapping.getName())
                 .foodCode(foodAndSnackMapping.getFoodCode())
                 .price(foodAndSnackMapping.getPrice())
@@ -25,9 +25,9 @@ public class FindFoodAndSnack {
                 .build();
     }
 
-    public static List<FindFoodAndSnack> toList(List<FoodAndSnackMapping> foodAndSnackMappingList) {
+    public static List<FindFoodAndSnackResDto> toList(List<FoodAndSnackMapping> foodAndSnackMappingList) {
         return foodAndSnackMappingList.stream()
-                .map(FindFoodAndSnack::of)
+                .map(FindFoodAndSnackResDto::of)
                 .collect(Collectors.toList());
     }
 }

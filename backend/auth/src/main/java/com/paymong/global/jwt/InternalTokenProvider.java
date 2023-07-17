@@ -42,17 +42,8 @@ public class InternalTokenProvider {
         return Arrays.asList(objectMapper.readValue(roles, String[].class));
     }
 
-    public String getMongId(String token) {
-        return extractAllClaims(token).get("mongId", String.class);
-    }
-
     private Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public Boolean isTokenExpired(String token) {
-        Date expiration = extractAllClaims(token).getExpiration();
-        return expiration.before(new Date());
     }
 }

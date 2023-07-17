@@ -1,5 +1,7 @@
 package com.paymong.mong.entity;
 
+import com.paymong.global.code.MapCode;
+import com.paymong.global.code.MongConditionCode;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -29,9 +31,6 @@ public class Mong {
 
     @Column(name = "status_code")
     private String statusCode;
-
-    @Column(name = "map_code")
-    private String mapCode;
 
     @Column(name = "name")
     private String name;
@@ -86,8 +85,7 @@ public class Mong {
         return Mong.builder()
                 .memberId(memberId)
                 .mongCode(mongCode)
-                .statusCode("CD000")
-                .mapCode("MP000")
+                .statusCode(MongConditionCode.NORMAL.code)
                 .name(name)
                 .weight(0)
                 .age(0)
@@ -101,6 +99,7 @@ public class Mong {
                 .poopCount(0)
                 .sleepStart(sleepStart)
                 .sleepEnd(sleepEnd)
+                .isSleep(false)
                 .active(true)
                 .build();
     }

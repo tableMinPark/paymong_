@@ -3,7 +3,9 @@ package com.paymong.paypoint.controller;
 import com.paymong.global.exception.fail.InvalidFailException;
 import com.paymong.global.response.SuccessResponse;
 import com.paymong.paypoint.dto.request.RegisterPayPointReqDto;
-import com.paymong.paypoint.dto.response.FindFoodAndSnack;
+import com.paymong.paypoint.dto.request.RegisterPointReqDto;
+import com.paymong.paypoint.dto.response.FindFoodAndSnackResDto;
+import com.paymong.paypoint.dto.response.FindMemberMapResDto;
 import com.paymong.paypoint.dto.response.FindPayPointInfoResDto;
 import com.paymong.paypoint.dto.response.FindPayPointResDto;
 import com.paymong.global.code.PayPointFailCode;
@@ -38,8 +40,8 @@ public class PayPointController {
 
     @GetMapping("/common/food/{foodCategory}")
     private ResponseEntity<Object> findFoodAndSnack(@PathVariable("foodCategory") String foodCategory) {
-        List<FindFoodAndSnack> findFoodAndSnackList = payPointService.findFoodAndSnack(foodCategory);
-        return ResponseEntity.ok().body(new SuccessResponse(findFoodAndSnackList));
+        List<FindFoodAndSnackResDto> findFoodAndSnackResDtoList = payPointService.findFoodAndSnack(foodCategory);
+        return ResponseEntity.ok().body(new SuccessResponse(findFoodAndSnackResDtoList));
     }
 
     @PostMapping("/member/paypoint")
@@ -51,5 +53,22 @@ public class PayPointController {
 
         payPointService.registerPayPoint(registerPayPointReqDto);
         return ResponseEntity.ok().body(new SuccessResponse(true));
+    }
+
+    @PutMapping("/member/paypoint")
+    private ResponseEntity<Object> registerPoint(@RequestBody RegisterPointReqDto registerPointReqDto) {
+        if (registerPointReqDto.getContent() == null || registerPointReqDto.getPrice() == null)
+            throw new InvalidFailException(PayPointFailCode.INVALID_REQUEST_DTO);
+        if (!StringUtils.hasText(registerPointReqDto.getContent()))
+            throw new InvalidFailException(PayPointFailCode.INVALID_CONTENT);
+
+        payPointService.registerPoint(registerPointReqDto);
+        return ResponseEntity.ok().body(new SuccessResponse(true));
+    }
+
+    @GetMapping("/member/map")
+    private ResponseEntity<Object> findMemberMap() {
+        FindMemberMapResDto findMemberMapResDto = payPointService.findMemberMap();
+        return ResponseEntity.ok().body(new SuccessResponse(findMemberMapResDto));
     }
 }

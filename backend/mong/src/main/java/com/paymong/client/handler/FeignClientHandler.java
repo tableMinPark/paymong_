@@ -27,11 +27,11 @@ public class FeignClientHandler {
              BasicResponse basicResponse = objectMapper.readValue(e.contentUTF8(), BasicResponse.class);
              log.info("FeignClientHandler : {} : {}", basicResponse, basicResponse.getStatus());
 
-             if (FeignClientCode.FAIL.getStatus().equals(basicResponse.getStatus())) {
+             if (FeignClientCode.FAIL.status.equals(basicResponse.getStatus())) {
                  FailResponse failResponse = objectMapper.readValue(e.contentUTF8(), FailResponse.class);
                  log.info("FeignClientHandler : {} : {} : {}", failResponse.getStatus(), failResponse.getData().getTitle(), failResponse.getData().getContent());
                  return FeignClientCode.FAIL;
-             } else if (FeignClientCode.ERROR.getStatus().equals(basicResponse.getStatus())) {
+             } else if (FeignClientCode.ERROR.status.equals(basicResponse.getStatus())) {
                  ErrorResponse errorResponse = objectMapper.readValue(e.contentUTF8(), ErrorResponse.class);
                  log.info("FeignClientHandler : {} : {} : {}", errorResponse.getStatus(), errorResponse.getMessage(), errorResponse.getCode());
                  return FeignClientCode.ERROR;

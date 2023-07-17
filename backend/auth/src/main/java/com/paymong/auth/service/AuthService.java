@@ -3,14 +3,13 @@ package com.paymong.auth.service;
 import com.paymong.auth.dto.request.LoginReqDto;
 import com.paymong.auth.dto.response.LoginResDto;
 import com.paymong.auth.dto.response.ReissueResDto;
-import com.paymong.auth.entity.CommonCode;
-import com.paymong.auth.entity.Member;
-import com.paymong.auth.entity.PayPoint;
-import com.paymong.auth.entity.Role;
+import com.paymong.auth.entity.*;
+import com.paymong.auth.repository.MemberMapRepository;
 import com.paymong.auth.repository.MemberRepository;
 import com.paymong.auth.repository.PayPointRepository;
 import com.paymong.auth.repository.RoleRepository;
 import com.paymong.global.code.AuthFailCode;
+import com.paymong.global.code.MapCode;
 import com.paymong.global.redis.Access;
 import com.paymong.global.redis.Refresh;
 import com.paymong.global.redis.Session;
@@ -39,6 +38,7 @@ import java.util.stream.Collectors;
 public class AuthService {
     private final MemberRepository memberRepository;
     private final PayPointRepository payPointRepository;
+    private final MemberMapRepository memberMapRepository;
     private final RoleRepository roleRepository;
     private final SessionRepository sessionRepository;
     private final ExternalTokenProvider externalTokenProvider;
@@ -77,7 +77,14 @@ public class AuthService {
                     roleRepository.save(Role.builder()
                             .memberId(memberId)
                             .code(CommonCode.builder()
-                                    .code(RoleCode.USER.getCode())
+                                    .code(RoleCode.USER.code)
+                                    .build())
+                            .build());
+
+                    memberMapRepository.save(MemberMap.builder()
+                            .memberId(memberId)
+                            .code(CommonCode.builder()
+                                    .code(MapCode.NORMAL.code)
                                     .build())
                             .build());
 
@@ -91,7 +98,7 @@ public class AuthService {
                         .memberId(memberId)
                         .accessToken(new HashMap<>())
                         .refreshToken(new HashMap<>())
-                        .roles(new ArrayList<>() {{ add(RoleCode.USER.getName()); }})
+                        .roles(new ArrayList<>() {{ add(RoleCode.USER.name); }})
                         .build());
 
         // 엑세스 토큰이 존재하면 삭제
@@ -152,7 +159,7 @@ public class AuthService {
                         .memberId(memberId)
                         .accessToken(new HashMap<>())
                         .refreshToken(new HashMap<>())
-                        .roles(new ArrayList<>() {{ add(RoleCode.USER.getName()); }})
+                        .roles(new ArrayList<>() {{ add(RoleCode.USER.name); }})
                         .build());
 
         // 기존 엑세스 토큰이 존재하면 삭제 (덮어쓰기전에)

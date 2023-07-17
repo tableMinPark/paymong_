@@ -35,7 +35,7 @@ public class SecurityConfig {
             .csrf().disable()
 
             .authorizeRequests()
-            .antMatchers("/information/mong/**").hasAnyAuthority(RoleCode.USER.getName(), RoleCode.ADMIN.getName())
+            .antMatchers("/information/mong/**").hasAnyAuthority(RoleCode.USER.name, RoleCode.ADMIN.name)
 
             .and()
             .exceptionHandling()

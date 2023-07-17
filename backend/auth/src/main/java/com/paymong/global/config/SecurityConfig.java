@@ -2,7 +2,6 @@ package com.paymong.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymong.global.jwt.InternalTokenProvider;
-import com.paymong.auth.global.security.*;
 import com.paymong.global.code.RoleCode;
 import com.paymong.global.security.AccessDeniedHandler;
 import com.paymong.global.security.AuthenticationEntryPoint;
@@ -36,7 +35,7 @@ public class SecurityConfig {
             .csrf().disable()
 
             .authorizeRequests()
-            .antMatchers("/auth/admin/**").hasAnyAuthority(RoleCode.ADMIN.getName())
+            .antMatchers("/auth/admin/**").hasAnyAuthority(RoleCode.ADMIN.name)
             .antMatchers("/auth/login", "/auth/login/watch", "/auth/reissue").permitAll()
 
             .and()

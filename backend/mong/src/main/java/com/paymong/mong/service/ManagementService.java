@@ -213,9 +213,11 @@ public class ManagementService {
         StatusCode statusCode = statusCodeRepository.findByCode(MongActiveCode.WALKING.code)
                 .orElseThrow(() -> new NotFoundFailException(MongFailCode.NOT_FOUND_ACTIVE));
 
+        int count = walkingCount / 500;
+
         // 포인트 갱신 호출
         String content = String.format("훈련 %d보 적립", walkingCount);
-        Integer price = statusCode.getPoint();
+        Integer price = walkingCount / 10;
         String code = statusCode.getCode();
         payPointService.registerPayPoint(RegisterPayPointReqDto.builder()
                 .content(content)
@@ -224,11 +226,8 @@ public class ManagementService {
                 .build());
 
         // 변경사항 적용
-        int count = walkingCount / 500;
         StatusCode nextStatus = StatusCode.builder()
-                .code(statusCode.getCode())
-                .point(statusCode.getPoint() + walkingCount / 10)
-                .strength(statusCode.getStrength() * (statusCode.getStrength()) * count)
+                .strength(statusCode.getStrength() * (statusCode.getStrength() * count))
                 .health(statusCode.getHealth())
                 .satiety(statusCode.getSatiety())
                 .sleep(statusCode.getSleep())
@@ -289,17 +288,17 @@ public class ManagementService {
     }
 
     private void setMongStatus(Mong mong, StatusCode statusCode) {
-        Integer strength = mong.getStrength();
-        Integer health = mong.getHealth();
-        Integer satiety = mong.getSatiety();
-        Integer sleep = mong.getSleep();
-        Integer weight = mong.getWeight();
+        int strength = mong.getStrength() + statusCode.getStrength();
+        int health = mong.getHealth() + statusCode.getHealth();
+        int satiety = mong.getSatiety() + statusCode.getSatiety();
+        int sleep = mong.getSleep() + statusCode.getSleep();
+        int weight = mong.getWeight() + statusCode.getWeight();
 
-        mong.setStrength(strength + statusCode.getStrength());
-        mong.setHealth(health + statusCode.getHealth());
-        mong.setSatiety(satiety + statusCode.getSatiety());
-        mong.setSleep(sleep + statusCode.getSleep());
-        mong.setWeight(weight + statusCode.getWeight());
+        mong.setStrength(Math.max(0, strength));
+        mong.setHealth(Math.max(0, health));
+        mong.setSatiety(Math.max(0, satiety));
+        mong.setSleep(Math.max(0, sleep));
+        mong.setWeight(Math.max(0, weight));
     }
 
     private Long getMongId() {

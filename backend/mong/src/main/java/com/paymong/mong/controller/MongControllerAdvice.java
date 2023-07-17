@@ -41,6 +41,7 @@ public class MongControllerAdvice {
 
     @ExceptionHandler({ RuntimeException.class })
     private ResponseEntity<Object> handleRuntimeException(RuntimeException e) {
+        e.printStackTrace();
         log.info("handleRuntimeException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ErrorCode.INTERNAL_SERVER));
     }
