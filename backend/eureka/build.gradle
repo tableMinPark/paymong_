@@ -1,0 +1,17 @@
+dependencies {
+    // eureka
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+}
+
+tasks.register('copyPrivate', Copy) {
+    copy {
+        from '../paymong_sub/eureka'
+        include "application.yml"
+        into 'src/main/resources'
+    }
+    copy {
+        from '../paymong_sub/eureka'
+        include "application.yml"
+        into 'src/test/resources'
+    }
+}

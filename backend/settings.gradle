@@ -1,0 +1,10 @@
+rootProject.name = 'backend'
+include 'eureka'
+include 'gateway'
+include 'core'
+include 'auth'
+include 'mong'
+include 'collect'
+include 'paypoint'
+include 'lifecycle'
+
