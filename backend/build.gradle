@@ -1,0 +1,76 @@
+buildscript {
+    ext {
+        springBootVersion = '2.7.10'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group 'com.paymong'
+    version '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    ext {
+        set('springCloudVersion', "2021.0.6")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(':eureka') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
+
+project(':gateway') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
+
+project(':core') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+}
+
+project(':auth') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
+
+project(':collect') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+}
