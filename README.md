@@ -161,7 +161,8 @@
 
 #### 1.2.4 컨텍스트 매핑을 통한 컨텍스트 간 관계 표현
 
-<img width="1391" alt="image" src="https://github.com/tableMinPark/paymong_/assets/87235273/b17d97be-b4ac-43e5-9d54-d3b1c6aa99bb">
+<img width="1430" alt="image" src="https://github.com/tableMinPark/paymong_/assets/87235273/28695e84-6b10-47a8-aec4-598c6b2c17e6">
+
 
 - 기존 9개의 의존 관계에서 3개로 감소
 - gateway 를 통한 내부 토큰 구조를 도입하여 중복 요청을 감소시켰다.
