@@ -163,6 +163,11 @@
 
 <img width="1430" alt="image" src="https://github.com/tableMinPark/paymong_/assets/87235273/28695e84-6b10-47a8-aec4-598c6b2c17e6">
 
+- **기존 9개의 의존 관계에서 3개로 감소시켰다.**
+- **gateway 를 통한 내부 토큰 구조를 도입하여 중복 요청을 감소시켰다.**
 
-- 기존 9개의 의존 관계에서 3개로 감소
-- gateway 를 통한 내부 토큰 구조를 도입하여 중복 요청을 감소시켰다.
+#### 1.2.5 전체 시스템 의존 관계
+
+<img width="1493" alt="image" src="https://github.com/tableMinPark/paymong_/assets/87235273/2a157950-3885-46d7-8189-96bbcd456cd3">
+
+- **Mong 데이터베이스의 Mong 테이블을 gateway 데이터베이스에 뷰 테이블로 생성하여 서비스 간 요청없이 데이터베이스를 조회할 수 있도록 했다.**
